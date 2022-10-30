@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] Ball ball;
+    [SerializeField] GameObject arrow;
     [SerializeField] LayerMask ballLayer;
     [SerializeField] LayerMask rayLayer;
     [SerializeField] Transform cameraPivot;
@@ -38,7 +39,10 @@ public class PlayerController : MonoBehaviour
         {
             var ray = cam.ScreenPointToRay(Input.mousePosition);
             if(Physics.Raycast(ray, ballDistance, ballLayer))
+            {
                 isShooting = true;
+                arrow.SetActive(true);
+            }
         }
 
         if (Input.GetMouseButton(0) && isShooting == true)
@@ -57,6 +61,9 @@ public class PlayerController : MonoBehaviour
                 forceMagnitude = Mathf.Clamp(forceMagnitude, 0,5);
                 forceFactor = forceMagnitude / 5;
             }
+
+            this.transform.LookAt(this.transform.position + forceDir);
+            arrow.transform.localScale = new Vector3(1.5f * forceFactor, 1.5f * forceFactor, 3 * forceFactor);
         }
 
         if (Input.GetMouseButton(0) && isShooting == false)
@@ -87,6 +94,7 @@ public class PlayerController : MonoBehaviour
             forceFactor = 0;
             forceDir = Vector3.zero;
             isShooting = false;
+            arrow.SetActive(false);
         }
 
         lastMousePosition = Input.mousePosition;
