@@ -19,10 +19,14 @@ public class PlayerController : MonoBehaviour
     Vector3 forceDir;
     float forceFactor;
 
+    Renderer[] arrowRends;
+
     private void Start()
     {
         ballDistance = Vector3.Distance(
             cam.transform.position, ball.Position) + 1;
+        arrowRends = arrow.GetComponentsInChildren<Renderer>();
+        arrow.SetActive(false);
     }
 
     void Update()
@@ -63,7 +67,12 @@ public class PlayerController : MonoBehaviour
             }
 
             this.transform.LookAt(this.transform.position + forceDir);
-            arrow.transform.localScale = new Vector3(1.5f * forceFactor, 1.5f * forceFactor, 3 * forceFactor);
+            arrow.transform.localScale = new Vector3(1 + 0.5f * forceFactor, 1 + 0.5f * forceFactor, 1 + 2 * forceFactor);
+
+            foreach (var rend in arrowRends)
+            {
+                rend.material.color = Color.Lerp(Color.white, Color.red, forceFactor);
+            }
         }
 
         if (Input.GetMouseButton(0) && isShooting == false)
